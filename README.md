@@ -110,7 +110,7 @@
 
 `perl /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl -n /b10riii/Results/pacbio/assemblies/defaultfiltered.asm.bp.p_ctg.fa -b /b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap -c /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml -r /b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner -o /b10riii/Results/hybridscaffold/hifiasm-filtered -f -g -B 2 -N 2`
 
-## 10. Polishing using short reads
+## 10. Polishing using short reads - Arrow
 `cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs`\
 `cut -f1 /b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai > sequence_heads.txt`\
 `cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel`
@@ -120,132 +120,71 @@
 
 `swarm -f /data/CaspiWGSData/b10riii/Tools/bam-split-index.swarm`
 
-`cut -f1-2 /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai | awk ' { print $1 ":0-" $2 } ' > contigs.txt`\
+`cut -f1-2 /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai | awk ' { print $1 ":0-" $2 } ' > contigs.txt`
 
-#Test command for polishing using split file\
+#Test command for polishing using split file
 
 `gcpp -w ptg000111l:0-16631 -r /b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa -o /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/ptg000111l.polished.fasta /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/ptg000111l.bam --log-level TRACE --log-file ptg000111l.log`
 
 #generate swarm file\
-`bash /b10riii/Tools/swarm-gcpp-windows-generator.sh > gcpp-swarm-with-windows.swarm`\
+`bash /b10riii/Tools/swarm-gcpp-windows-generator.sh > gcpp-swarm-with-windows.swarm`
 
-`swarm -f /b10riii/Tools/gcpp-swarm-with-windows.swarm -g 121 -t 20 --gres=lscratch:300`\
+`swarm -f /b10riii/Tools/gcpp-swarm-with-windows.swarm -g 121 -t 20 --gres=lscratch:300`
 
-# merge polished fasta files
-/data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs
-ls *polished.fasta | wc -l
-wc -l sequence_heads.txt 
-cat *polished.fasta > arrow-polished-1.fasta
-grep ">" arrow-polished-1.fasta
-grep ">" arrow-polished-1.fasta | wc -l
+### 10.1. Merge polished fasta files
+`cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs`\
+`ls *polished.fasta | wc -l`\
+`wc -l sequence_heads.txt`\ 
+`cat *polished.fasta > arrow-polished-1.fasta`\
+`grep ">" arrow-polished-1.fasta`\
+`grep ">" arrow-polished-1.fasta | wc -l`
 
+### 10.2. quast after and before polishing
+`module load quast`\
+`quast.py -o /b10riii/Results/quast/polished-hifiasm-filtered /b10riii/Results/pacbio/hifiasm/default-60-filtered/default-60-filtered.asm.bp.p_ctg.fa /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/arrow-polished-1/arrow-polished-1.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120`
 
-# quast after and before polishing
-module load quast
-quast.py -o /data/CaspiWGSData/b10riii/Results/quast/polished-hifiasm-filtered /data/CaspiWGSData/b10riii/Results/pacbio/hifiasm/default-60-filtered/default-60-filtered.asm.bp.p_ctg.fa /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/arrow-polished-1/arrow-polished-1.fasta /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120
+## 11. Polishing using short reads - Pilon
+`python /b10riii/Tools/Fasta_splitter.py arrow-polished-1.fasta > sequence_heads.txt`\
+`module load pilon`
 
-=========================
-Arrow - polish 2
+### 11.1. Index genome
+`module load bwa`\
+`cd /b10riii/Results/polished/illuminapolished`\
+`ln -s /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/arrow-polished-1/arrow-polished-1.fasta .`\
+`bwa index arrow-polished-1.fasta`
 
-#pbmm2 align
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/data/CaspiWGSData/b10riii/" ; conda activate pbmm2 ; cd /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished ; pbmm2 align /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/arrow-polished-1/arrow-polished-1.fasta /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/subreadbams.fofn asmfilteredaligned-norm-polished-1.bam --sort -j 160 -J 160 -m 8G --preset SUBREAD --log-level INFO --log-file asmdefaultfiltered-norm-polished-1.log
+### 11.2. Map reads
+`bwa mem -t 260 arrow-polished-1.fasta F1_S1_R1_001.trimmed.fastq.gz F1_S1_R2_001.trimmed.fastq.gz -o bwa_mapping_illumina_for_pilon_on_arrow_polished-1.sam`\
+`swarm -f /b10riii/Tools/pilon-bwa.swarm -g 1507 -t 60 --gres=lscratch:600 --partition largemem`
 
-swarm -f /data/CaspiWGSData/b10riii/Tools/pbmm2-alignment-norm-parallel-polished-1.swarm -g 1507 -t 60 --gres=lscratch:800 --partition largemem
+### 11.3. samtools view/sort/index
+`module load samtools ; cd /data/CaspiWGSData/b10riii/Results/polished/illuminapolished ; samtools view -@ 120 -Sb bwa_mapping_illumina_for_pilon_on_arrow_polished-1.sam > bwa_mapping_illumina_for_pilon_on_arrow_polished-1.bam ; samtools sort -@ 120 -o bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam bwa_mapping_illumina_for_pilon_on_arrow_polished-1.bam ; samtools index -@ 120 bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam`
 
+### 11.4. Parallel pilon
+#below generates the swarm file to split pilon bam, sort and index per contig and run pilon\
+`for i in `cat sequence_heads.txt`; do echo "module load bamtools ; module load samtools ; module load pilon ; TMPDIR=/b10riii/ ; cd /b10riii/Results/polished/illuminapolished/pilon-parallel ; bamtools merge -in bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam -out "$i".bam -region "$i" ; samtools sort -o "$i"_sorted.bam "$i".bam ; samtools index "$i"_sorted.bam ; java -Xmx${SLURM_MEM_PER_NODE}m -jar $PILON_JAR --genome "$i".fa --bam "$i"_sorted.bam --output "$i" --outdir testpilon" ; done > pilon_parallel.swarm`
 
+#Find/replace ptg000001l|arrow to ptg000001l\|arrow in the swarm file\
+#run normal swarm\
+`swarm -f /b10riii/Tools/pilon_parallel.swarm -g 247 -t 28 --gres=lscratch:400`\
+#run 58l alone in a different swarm job with largemem\
+`swarm -f /b10riii/Tools/pilon_parallel-58.swarm -g 3000 -t 60 --gres=lscratch:700 --partition largemem`
 
-=======================
-# Polishing with Pilon
-# https://timkahlke.github.io/LongRead_tutorials/ECR_P.html
-# trimmed fastq illumina location
-/data/CaspiWGSData/b10riii/Results/illumina/bbduk
+### 11.5. Combine fastas
+`cat *arrow.fasta > ../../pilon-parallel/arrow-1-pilon-1-polished-1.fasta`\
+`grep ">" arrow-1-pilon-1-polished-1.fasta`\
+`grep ">" arrow-1-pilon-1-polished-1.fasta | wc -l`\
 
-### parallelize pilon polishing - 1 day for 1 contigs
-#https://raw.githubusercontent.com/harish0201/General_Scripts/master/Fasta_splitter.py
-cd /data/CaspiWGSData/b10riii/Results/polished/illuminapolished/pilon-parallel/
-python /data/CaspiWGSData/b10riii/Tools/Fasta_splitter.py arrow-polished-1.fasta > sequence_heads.txt
+### 11.6 quast after and before pilon polishing
+`module load quast`\
+`quast.py -o /b10riii/Results/quast/pilon-polished-hifiasm-filtered /b10riii/Results/pacbio/hifiasm/default-60-filtered/default-60-filtered.asm.bp.p_ctg.fa /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/arrow-polished-1/arrow-polished-1.fasta /b10riii/Results/polished/illuminapolished/pilon-parallel/arrow-1-pilon-1-polished-1.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120`
 
-module load pilon
-#pilon  1.24
-
-# index genome
-module load bwa
-bwa 0.7.17
-cd /data/CaspiWGSData/b10riii/Results/polished/illuminapolished
-ln -s /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/arrow-polished-1/arrow-polished-1.fasta .
-bwa index arrow-polished-1.fasta
-#About 1 hr
-
-# map reads
-bwa mem -t 260 arrow-polished-1.fasta F1_S1_R1_001.trimmed.fastq.gz F1_S1_R2_001.trimmed.fastq.gz -o bwa_mapping_illumina_for_pilon_on_arrow_polished-1.sam
-swarm -f /data/CaspiWGSData/b10riii/Tools/pilon-bwa.swarm -g 1507 -t 60 --gres=lscratch:600 --partition largemem
-pilon alignment - 60 core machine - over night. 747 gb
-
-# samtools view/sort/index
-module load samtools ; cd /data/CaspiWGSData/b10riii/Results/polished/illuminapolished ; samtools view -@ 120 -Sb bwa_mapping_illumina_for_pilon_on_arrow_polished-1.sam > bwa_mapping_illumina_for_pilon_on_arrow_polished-1.bam ; samtools sort -@ 120 -o bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam bwa_mapping_illumina_for_pilon_on_arrow_polished-1.bam ; samtools index -@ 120 bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam
-swarm -f /data/CaspiWGSData/b10riii/Tools/pilon-samtools.swarm -g 1507 -t 60 --gres=lscratch:600 --partition largemem
-# about 2 hours
-
-# pilon polish
-module load pilon ; cd /data/CaspiWGSData/b10riii/Results/polished/illuminapolished ; java -Xmx${SLURM_MEM_PER_NODE}m -jar $PILON_JAR --genome arrow-polished-1.fasta --bam bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam --outdir testpilon
-swarm -f /data/CaspiWGSData/b10riii/Tools/pilon.swarm -g 1507 -t 60 --gres=lscratch:600 --partition largemem
-
-
--------
-Pilon altogether didnt work - 1 contig more than 1 day.
-Parallel using individual contigs.
-
-#below generates the swarm file to split pilon bam, sort and index per contig and run pilon
-for i in `cat sequence_heads.txt`; do echo "module load bamtools ; module load samtools ; module load pilon ; TMPDIR=/data/CaspiWGSData/b10riii/ ; cd /data/CaspiWGSData/b10riii/Results/polished/illuminapolished/pilon-parallel ; bamtools merge -in bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam -out "$i".bam -region "$i" ; samtools sort -o "$i"_sorted.bam "$i".bam ; samtools index "$i"_sorted.bam ; java -Xmx${SLURM_MEM_PER_NODE}m -jar $PILON_JAR --genome "$i".fa --bam "$i"_sorted.bam --output "$i" --outdir testpilon" ; done > pilon_parallel.swarm
-
-# Find/replace ptg000001l|arrow to ptg000001l\|arrow in the swarm file
-
-# example swarm command
-module load bamtools ; module load samtools ; module load pilon ; TMPDIR=/data/CaspiWGSData/b10riii/ ; cd /data/CaspiWGSData/b10riii/Results/polished/illuminapolished/pilon-parallel ; bamtools merge -in bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam -out ptg000001l\|arrow.bam -region ptg000001l\|arrow ; samtools sort -o ptg000001l\|arrow_sorted.bam ptg000001l\|arrow.bam ; samtools index ptg000001l\|arrow_sorted.bam ; java -Xmx1543168m -jar /usr/local/apps/pilon/1.24/pilon-1.24.jar --genome ptg000001l\|arrow.fa --bam ptg000001l\|arrow_sorted.bam --output ptg000001l\|arrow --outdir testpilon
-
-cd /data/CaspiWGSData/b10riii/Results/polished/illuminapolished/pilon-parallel
-
-# run normal swarm
-swarm -f /data/CaspiWGSData/b10riii/Tools/pilon_parallel.swarm -g 247 -t 28 --gres=lscratch:400
-#58l takes 3 days
-# run 58l alone in a different swarm job with largemem
-swarm -f /data/CaspiWGSData/b10riii/Tools/pilon_parallel-58.swarm -g 3000 -t 60 --gres=lscratch:700 --partition largemem
-
-
-
-# combine fastas
-/data/CaspiWGSData/b10riii/Results/polished/illuminapolished/pilon-parallel/testpilon
-
-cat *arrow.fasta > ../../pilon-parallel/arrow-1-pilon-1-polished-1.fasta
-grep ">" arrow-1-pilon-1-polished-1.fasta
-grep ">" arrow-1-pilon-1-polished-1.fasta | wc -l
-
-/data/CaspiWGSData/b10riii/Results/polished/illuminapolished/pilon-parallel/arrow-1-pilon-1-polished-1.fasta
-
-# quast after and before pilon polishing
-module load quast
-quast.py -o /data/CaspiWGSData/b10riii/Results/quast/pilon-polished-hifiasm-filtered /data/CaspiWGSData/b10riii/Results/pacbio/hifiasm/default-60-filtered/default-60-filtered.asm.bp.p_ctg.fa /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/arrow-polished-1/arrow-polished-1.fasta /data/CaspiWGSData/b10riii/Results/polished/illuminapolished/pilon-parallel/arrow-1-pilon-1-polished-1.fasta /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120
-=======================
-
-Bionano
-
-
-
-#bionano solve install local
-#tried conda, docker - errors emailed helix
-# installed singularity in aws ubuntu linux, created perl container, installed conda and python, used container in biowulf
-
-
-singularity build --remote --sandbox singularity-bionano.img docker://ubuntu:20.04
-singularity shell --writable singularity-bionano.img/
-
-module load singularity
-singularity shell -B /usr/lib/locale/:/usr/lib/locale/ --bind /data/CaspiWGSData/ singularity-bionano-perl-python.sif 
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh
-conda create -n python37 python=3.7.7 lxml=4.5.0 pandas=1.0.3 natsort=7.0.1 drmaa=0.7.9 numpy=1.18.4 numba=0.42.0 pandasql=0.7.3 scikit-learn=0.22.1 pyyaml=5.3.1 intervaltree=3.0.2 scipy=1.4.1 imbalanced-learn=0.6.2 matplotlib=3.1.3 lightgbm=2.3.0 xlrd=1.2.0 pytest=5.4.2 pytest-forked pytest-xdist pytest-cov coverage=5.4 hmmlearn xgboost=0.90 joblib=0.13.2 xlrd
-conda activate python37
-cd perl-bionano/
-pip install tools/pipeline/1.0/bionano_packages/pyBionano
+## 12. Hybrid scaffolding
+`source /b10riii/Tools/conda/etc/profile.d/conda.sh`\
+`conda create -n python37 python=3.7.7 lxml=4.5.0 pandas=1.0.3 natsort=7.0.1 drmaa=0.7.9 numpy=1.18.4 numba=0.42.0 pandasql=0.7.3 scikit-learn=0.22.1 pyyaml=5.3.1 intervaltree=3.0.2 scipy=1.4.1 imbalanced-learn=0.6.2 matplotlib=3.1.3 lightgbm=2.3.0 xlrd=1.2.0 pytest=5.4.2 pytest-forked pytest-xdist pytest-cov coverage=5.4 hmmlearn xgboost=0.90 joblib=0.13.2 xlrd`\
+`conda activate python37`\
+`cd perl-bionano/`\
+`pip install tools/pipeline/1.0/bionano_packages/pyBionano`\
 pip install tools/pipeline/1.0/bionano_packages/SVConfModels
 pip install tools/pipeline/1.0/bionano_packages/lohdetection
 cd /data/CaspiWGSData/b10riii/Tools/
