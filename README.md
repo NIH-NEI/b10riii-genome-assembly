@@ -49,34 +49,34 @@
 `canu -p hicanudefault2 -d hicanudefault2 genomeSize=2.7g -pacbio-hifi *.fastq.gz`\
 `canu -p hicanudefault3 -d hicanudefault3 genomeSize=2.7g -pacbio-hifi *.fastq.gz batThreads=24 batMemory=247g`
 
-## 6. Quast hicanu
+### 5.1. hicanu assembly quality
 `module load quast`\
 #Loading quast, version 5.0.2
 `quast.py -o quast/hicanu pacbio/hicanu/hicanudefault3/hicanudefault3.contigs.fasta pacbio/hicanu/hicanudefault4/hicanudefault4.contigs.fasta ../RawData/GCA_000001635.9_GRCm39_genomic.fna.gz`\
 `quast.py -o quast/hicanu/vsmm39 -r ../RawData/GCA_000001635.9_GRCm39_genomic.fna.gz -g ../RawData/GCA_000001635.9_GRCm39_genomic.gff.gz pacbio/hicanu/hicanudefault3/hicanudefault3.contigs.fasta pacbio/hicanu/hicanudefault4/hicanudefault4.contigs.fasta`
 
-## 7. pbipa assembly
+## 6. pbipa assembly
 `ipa local --nthreads 20 --njobs 1 --run-dir /data/CaspiWGSData/b10riii/Results/pacbio/pbipa/default -i /b10riii/RawData/pacbio/pacbio_ccs/F1_1.ccs.fastq -i /b10riii/RawData/pacbio/pacbio_ccs/F1_2.ccs.fastq -i /b10riii/RawData/pacbio/pacbio_ccs/F1_3.ccs.fastq -i /b10riii/RawData/pacbio/pacbio_ccs/F1_4.ccs.fastq`
 
-### 7.1. pbipa assembly filtered
+### 6.1. pbipa assembly filtered
 `ipa local --nthreads 20 --njobs 1 --run-dir /b10riii/Results/pacbio/pbipa/defaultfiltered -i /b10riii/Results/pacbio/hifiadapterfilt/F1_1.ccs.filt.fastq.gz -i /b10riii/Results/pacbio/hifiadapterfilt/F1_2.ccs.filt.fastq.gz -i /b10riii/Results/pacbio/hifiadapterfilt/F1_3.ccs.filt.fastq.gz -i /b10riii/Results/pacbio/hifiadapterfilt/F1_4.ccs.filt.fastq.gz`\
 #to check snakemake command\
 `ipa local -i ../Results/pacbio/pbipa/default/input.fofn --only-print --nthreads 20 --njobs 1`
 
-### 7.2. pbipa assembly quality
+### 6.2. pbipa assembly quality
 `quast.py -o ../Results/quast/pbipa ../Results/pacbio/pbipa/default/assembly-results/final.p_ctg.fasta ../Results/pacbio/pbipa/default/assembly-results/final.a_ctg.fasta ../Results/pacbio/pbipa/default2/assembly-results/final.p_ctg.fasta ../Results/pacbio/pbipa/default2/assembly-results/final.a_ctg.fasta ../RawData/GCA_000001635.9_GRCm39_genomic.fna.gz --threads 60`
 
-## 8. hifiasm
+## 7. hifiasm assembly
 `hifiasm -o ../Results/hifiasm/default.asm -t 600 ../RawData/pacbio/pacbio_ccs/F1_1.ccs.fastq ../RawData/pacbio/pacbio_ccs/F1_2.ccs.fastq ../RawData/pacbio/pacbio_ccs/F1_3.ccs.fastq ../RawData/pacbio/pacbio_ccs/F1_4.ccs.fastq`\
 `sbatch --cpus-per-task=60 --mem=1507g --time=10-00:00:00 --partition=largemem /b10riii/Tools/hifiasm60filtered.sbatch`
 #convert gfa to fa
 `awk '/^S/{print ">"$2;print $3}' default-60-filtered.asm.bp.p_ctg.gfa > default-60-filtered.asm.bp.p_ctg.fa`\
 `awk '/^S/{print ">"$2;print $3}' default.asm.bp.p_ctg.gfa > default.asm.bp.p_ctg.fa`
 
-### 8.1 quast with hicanu, pbipa, hifiasm
+### 7.1 quast with hicanu, pbipa, hifiasm
 `quast.py -o /b10riii/Results/quast/hicanu-pbipa-hifiasm /b10riii/Results/pacbio/hicanu/hicanudefault3/hicanudefault3.contigs.fasta /b10riii/Results/pacbio/hicanu/hicanudefault4/hicanudefault4.contigs.fasta /b10riii/Results/pacbio/pbipa/default/assembly-results/final.p_ctg.fasta /b10riii/Results/pacbio/pbipa/default2/assembly-results/final.p_ctg.fasta /b10riii/Results/pacbio/hifiasm/default-60/default.asm.bp.p_ctg.fa /b10riii/Results/pacbio/hifiasm/default-60-filtered/default-60-filtered.asm.bp.p_ctg.fa /b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120`
 
-## 9. Polishing using long reads
+## 8. Polishing using long reads
 `source /b10riii/Tools/conda/etc/profile.d/conda.sh`\
 `conda activate pbmm2`\
 `cd /b10riii/Results/polished/pacbiopolished`\
@@ -93,7 +93,7 @@
 `swarm -f /b10riii/Tools/pbmm2-alignment-norm-parallel.swarm -g 247 -t 56 --gres=lscratch:800`\
 `ls -lh | grep "samtools" | cut -d'.' -f4 | sort | uniq -c`\
 
-## 10. Hybrid assembly
+## 9. Hybrid assembly
 `source /b10riii/Tools/conda/etc/profile.d/conda.sh`
 `conda create -n python37 python=3.7.7 lxml=4.5.0 pandas=1.0.3 natsort=7.0.1 drmaa=0.7.9 numpy=1.18.4 numba=0.42.0 pandasql=0.7.3 scikit-learn=0.22.1 pyyaml=5.3.1 intervaltree=3.0.2 scipy=1.4.1 imbalanced-learn=0.6.2 matplotlib=3.1.3 lightgbm=2.3.0 xlrd=1.2.0 pytest=5.4.2 pytest-forked pytest-xdist pytest-cov coverage=5.4 hmmlearn xgboost=0.90 joblib=0.13.2 xlrd`\
 `conda activate python37`\
@@ -110,7 +110,7 @@
 
 `perl /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl -n /b10riii/Results/pacbio/assemblies/defaultfiltered.asm.bp.p_ctg.fa -b /b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap -c /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml -r /b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner -o /b10riii/Results/hybridscaffold/hifiasm-filtered -f -g -B 2 -N 2`\
 
-## 11. Polishing using short reads
+## 10. Polishing using short reads
 `cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs`\
 `cut -f1 /b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai > sequence_heads.txt`\
 `cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel`\
