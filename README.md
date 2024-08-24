@@ -115,23 +115,21 @@
 `cut -f1 /b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai > sequence_heads.txt`\
 `cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel`
 
-#below generates the swarm file for splitting bam file
-`for i in `cat sequence_heads.txt`; do echo "source /b10riii/Tools/conda/etc/profile.d/conda.sh ; module load bamtools ; TMPDIR=/b10riii/ ; cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs ; bamtools merge -in asmfilteredaligned-norm.bam -out "$i".bam -region "$i" ; conda activate pbindex ; pbindex "$i".bam"; done > bam-split-index.swarm`\
+#below generates the swarm file for splitting bam file\
+`for i in `cat sequence_heads.txt`; do echo "source /b10riii/Tools/conda/etc/profile.d/conda.sh ; module load bamtools ; TMPDIR=/b10riii/ ; cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs ; bamtools merge -in asmfilteredaligned-norm.bam -out "$i".bam -region "$i" ; conda activate pbindex ; pbindex "$i".bam"; done > bam-split-index.swarm`
 
-`swarm -f /data/CaspiWGSData/b10riii/Tools/bam-split-index.swarm`\ 
+`swarm -f /data/CaspiWGSData/b10riii/Tools/bam-split-index.swarm`
 
-#Test polishing using gcpp -w windows option\
-https://github.com/PacificBiosciences/pbbioconda/issues/285
-cut -f1-2 /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai | awk ' { print $1 ":0-" $2 } ' > contigs.txt
+`cut -f1-2 /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai | awk ' { print $1 ":0-" $2 } ' > contigs.txt`\
 
-#Test command
+#Test command for polishing using split file\
 
-gcpp -w ptg000111l:0-16631 -r /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa -o /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/ptg000111l.polished.fasta /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/ptg000111l.bam --log-level TRACE --log-file ptg000111l.log
+`gcpp -w ptg000111l:0-16631 -r /b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa -o /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/ptg000111l.polished.fasta /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/ptg000111l.bam --log-level TRACE --log-file ptg000111l.log`
 
-#generate swarm file
-bash /data/CaspiWGSData/b10riii/Tools/swarm-gcpp-windows-generator.sh > gcpp-swarm-with-windows.swarm
+#generate swarm file\
+`bash /b10riii/Tools/swarm-gcpp-windows-generator.sh > gcpp-swarm-with-windows.swarm`\
 
-swarm -f /data/CaspiWGSData/b10riii/Tools/gcpp-swarm-with-windows.swarm -g 121 -t 20 --gres=lscratch:300
+`swarm -f /b10riii/Tools/gcpp-swarm-with-windows.swarm -g 121 -t 20 --gres=lscratch:300`\
 
 # merge polished fasta files
 /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs
