@@ -173,7 +173,7 @@
 ### 11.5. Combine fastas
 `cat *arrow.fasta > ../../pilon-parallel/arrow-1-pilon-1-polished-1.fasta`\
 `grep ">" arrow-1-pilon-1-polished-1.fasta`\
-`grep ">" arrow-1-pilon-1-polished-1.fasta | wc -l`\
+`grep ">" arrow-1-pilon-1-polished-1.fasta | wc -l`
 
 ### 11.6 quast after and before pilon polishing
 `module load quast`\
