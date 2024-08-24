@@ -85,7 +85,7 @@
 `echo "/data/CaspiWGSData/b10riii/RawData/pacbio/pacbio_subreads/F1_3.subreads.bam" >> subreadbams.fofn`\
 `echo "/data/CaspiWGSData/b10riii/RawData/pacbio/pacbio_subreads/F1_4.subreads.bam" >> subreadbams.fofn`\
 `pbmm2 align /b10riii/Results/pacbio/assemblies/asmdefault.bp.p_ctg.fa subreadbams.fofn asmaligned.bam --sort -j 80 -J 60 -m 32G --preset SUBREAD`\
-#-j, -J number of threads for alignment and sorting\
+#-j, -J number of threads for alignment and sorting
 
 #parallelize alignment step\
 #below generates the swarm file\
@@ -113,40 +113,14 @@
 ## 10. Polishing using short reads
 `cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs`\
 `cut -f1 /b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai > sequence_heads.txt`\
-`cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel`\
+`cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel`
 
-#below generates the swarm file\
+#below generates the swarm file for splitting bam file
 `for i in `cat sequence_heads.txt`; do echo "source /b10riii/Tools/conda/etc/profile.d/conda.sh ; module load bamtools ; TMPDIR=/b10riii/ ; cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs ; bamtools merge -in asmfilteredaligned-norm.bam -out "$i".bam -region "$i" ; conda activate pbindex ; pbindex "$i".bam"; done > bam-split-index.swarm`\
 
-`swarm -f /b10riii/Tools/bam-split-index.swarm`\ 
+`swarm -f /data/CaspiWGSData/b10riii/Tools/bam-split-index.swarm`\ 
 
-`conda activate gcpp`\
-`gcpp -r "$i".fasta -o polished_seqs/"$i".polished.fastq -o polished_seqs/"$i".polished.vcf -o polished_seqs/"$i".polished.gff -n 5 --annotateGFF --reportEffectiveCoverage "$i".bam"'
-gcpp -r /b10riii/Results/polished/pacbiopolished/gcpp-parallel/ptg000111l.fa -o /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/ptg000111l.polished.fastq --reportEffectiveCoverage /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/ptg000111l.bam
-
-Create index
-cd /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs
-samtools faidx /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa
-cut -f1 /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai > sequence_heads.txt
-# also faidx index split fasta files - not used
-cd /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel
-for i in `cat sequence_heads.txt`; do samtools faidx "$i".fa ; done
-
-Test slice
-bamtools merge -in asmfilteredaligned-norm.bam -out ptg000002l.bam -region ptg000002l
-
-#below generates the swarm file
-for i in `cat sequence_heads.txt`; do echo "source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh ; module load bamtools ; TMPDIR=/data/CaspiWGSData/b10riii/ ; cd /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs ; bamtools merge -in asmfilteredaligned-norm.bam -out "$i".bam -region "$i" ; conda activate pbindex ; pbindex "$i".bam"; done > bam-split-index.swarm
-
-swarm -f /data/CaspiWGSData/b10riii/Tools/bam-split-index.swarm 
-
-Test polishing (didnt work)
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh
-conda activate gcpp
-gcpp -r "$i".fasta -o polished_seqs/"$i".polished.fastq -o polished_seqs/"$i".polished.vcf -o polished_seqs/"$i".polished.gff -n 5 --annotateGFF --reportEffectiveCoverage "$i".bam"'
-gcpp -r /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/ptg000111l.fa -o /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/ptg000111l.polished.fastq --reportEffectiveCoverage /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/ptg000111l.bam
-
-Test polishing using gcpp -w windows option
+#Test polishing using gcpp -w windows option\
 https://github.com/PacificBiosciences/pbbioconda/issues/285
 cut -f1-2 /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai | awk ' { print $1 ":0-" $2 } ' > contigs.txt
 
