@@ -51,7 +51,7 @@
 
 ### 5.1. hicanu assembly quality
 `module load quast`\
-#Loading quast, version 5.0.2
+#Loading quast, version 5.0.2\
 `quast.py -o quast/hicanu pacbio/hicanu/hicanudefault3/hicanudefault3.contigs.fasta pacbio/hicanu/hicanudefault4/hicanudefault4.contigs.fasta ../RawData/GCA_000001635.9_GRCm39_genomic.fna.gz`\
 `quast.py -o quast/hicanu/vsmm39 -r ../RawData/GCA_000001635.9_GRCm39_genomic.fna.gz -g ../RawData/GCA_000001635.9_GRCm39_genomic.gff.gz pacbio/hicanu/hicanudefault3/hicanudefault3.contigs.fasta pacbio/hicanu/hicanudefault4/hicanudefault4.contigs.fasta`
 
@@ -69,7 +69,7 @@
 ## 7. hifiasm assembly
 `hifiasm -o ../Results/hifiasm/default.asm -t 600 ../RawData/pacbio/pacbio_ccs/F1_1.ccs.fastq ../RawData/pacbio/pacbio_ccs/F1_2.ccs.fastq ../RawData/pacbio/pacbio_ccs/F1_3.ccs.fastq ../RawData/pacbio/pacbio_ccs/F1_4.ccs.fastq`\
 `sbatch --cpus-per-task=60 --mem=1507g --time=10-00:00:00 --partition=largemem /b10riii/Tools/hifiasm60filtered.sbatch`
-#convert gfa to fa
+#convert gfa to fa\
 `awk '/^S/{print ">"$2;print $3}' default-60-filtered.asm.bp.p_ctg.gfa > default-60-filtered.asm.bp.p_ctg.fa`\
 `awk '/^S/{print ">"$2;print $3}' default.asm.bp.p_ctg.gfa > default.asm.bp.p_ctg.fa`
 
@@ -105,10 +105,10 @@
 #edited align_molecules.pl to fix python2.7 to python \
 #run bionano-solve-hybrid-batch.sh\
 #/b10riii/Tools/perl-bionano/tools/pipeline/Solve3.7_03302022_283/HybridScaffold/03302022/scripts/align_molecules.pl\
-#bionano uses 2.7 in code, but install requires 3.7.7
+#bionano uses 2.7 in code, but install requires 3.7.7\
 `ln -s /b10riii/Tools/conda/envs/python37/bin/python /b10riii/Tools/conda/envs/python37/bin/python2.7`\
 
-`perl /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl -n /b10riii/Results/pacbio/assemblies/defaultfiltered.asm.bp.p_ctg.fa -b /b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap -c /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml -r /b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner -o /b10riii/Results/hybridscaffold/hifiasm-filtered -f -g -B 2 -N 2`\
+`perl /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl -n /b10riii/Results/pacbio/assemblies/defaultfiltered.asm.bp.p_ctg.fa -b /b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap -c /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml -r /b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner -o /b10riii/Results/hybridscaffold/hifiasm-filtered -f -g -B 2 -N 2`
 
 ## 10. Polishing using short reads
 `cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs`\
