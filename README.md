@@ -20,7 +20,7 @@
 #R commands in jellyanalysis.R in Tools folder
 
 ### 2.2. GenomeScope - analyze global genome properties
-`Rscript genomescope.R jellyhisto.txt 21 150 /data/CaspiWGSData/b10riii/Results/genomescope`
+`Rscript genomescope.R jellyhisto.txt 21 150 /b10riii/Results/genomescope`
 
 ## 3. Short reads - QA and QC 
 `module load fastqc`\
@@ -40,8 +40,8 @@
 ## 4. Long reads - Adapter identification and removal
 `module load bamtools`\
 `module load blast`\
-`export PATH=$PATH:/data/CaspiWGSData/b10riii/Tools/HiFiAdapterFilt`\
-`export PATH=$PATH:/data/CaspiWGSData/b10riii/Tools/HiFiAdapterFilt/DB`\
+`export PATH=$PATH:/b10riii/Tools/HiFiAdapterFilt`\
+`export PATH=$PATH:/b10riii/Tools/HiFiAdapterFilt/DB`\
 `bash pbadapterfilt.sh -t 30`
 
 ## 5. Hicanu assembly
@@ -56,7 +56,7 @@
 `quast.py -o quast/hicanu/vsmm39 -r ../RawData/GCA_000001635.9_GRCm39_genomic.fna.gz -g ../RawData/GCA_000001635.9_GRCm39_genomic.gff.gz pacbio/hicanu/hicanudefault3/hicanudefault3.contigs.fasta pacbio/hicanu/hicanudefault4/hicanudefault4.contigs.fasta`
 
 ## 6. pbipa assembly
-`ipa local --nthreads 20 --njobs 1 --run-dir /data/CaspiWGSData/b10riii/Results/pacbio/pbipa/default -i /b10riii/RawData/pacbio/pacbio_ccs/F1_1.ccs.fastq -i /b10riii/RawData/pacbio/pacbio_ccs/F1_2.ccs.fastq -i /b10riii/RawData/pacbio/pacbio_ccs/F1_3.ccs.fastq -i /b10riii/RawData/pacbio/pacbio_ccs/F1_4.ccs.fastq`
+`ipa local --nthreads 20 --njobs 1 --run-dir /b10riii/Results/pacbio/pbipa/default -i /b10riii/RawData/pacbio/pacbio_ccs/F1_1.ccs.fastq -i /b10riii/RawData/pacbio/pacbio_ccs/F1_2.ccs.fastq -i /b10riii/RawData/pacbio/pacbio_ccs/F1_3.ccs.fastq -i /b10riii/RawData/pacbio/pacbio_ccs/F1_4.ccs.fastq`
 
 ### 6.1. pbipa assembly filtered
 `ipa local --nthreads 20 --njobs 1 --run-dir /b10riii/Results/pacbio/pbipa/defaultfiltered -i /b10riii/Results/pacbio/hifiadapterfilt/F1_1.ccs.filt.fastq.gz -i /b10riii/Results/pacbio/hifiadapterfilt/F1_2.ccs.filt.fastq.gz -i /b10riii/Results/pacbio/hifiadapterfilt/F1_3.ccs.filt.fastq.gz -i /b10riii/Results/pacbio/hifiadapterfilt/F1_4.ccs.filt.fastq.gz`\
@@ -82,8 +82,8 @@
 `cd /b10riii/Results/polished/pacbiopolished`\
 `echo "/b10riii/RawData/pacbio/pacbio_subreads/F1_1.subreads.bam" > subreadbams.fofn`\
 `echo "/b10riii/RawData/pacbio/pacbio_subreads/F1_2.subreads.bam" >> subreadbams.fofn`\
-`echo "/data/CaspiWGSData/b10riii/RawData/pacbio/pacbio_subreads/F1_3.subreads.bam" >> subreadbams.fofn`\
-`echo "/data/CaspiWGSData/b10riii/RawData/pacbio/pacbio_subreads/F1_4.subreads.bam" >> subreadbams.fofn`\
+`echo "/b10riii/RawData/pacbio/pacbio_subreads/F1_3.subreads.bam" >> subreadbams.fofn`\
+`echo "/b10riii/RawData/pacbio/pacbio_subreads/F1_4.subreads.bam" >> subreadbams.fofn`\
 `pbmm2 align /b10riii/Results/pacbio/assemblies/asmdefault.bp.p_ctg.fa subreadbams.fofn asmaligned.bam --sort -j 80 -J 60 -m 32G --preset SUBREAD`\
 #-j, -J number of threads for alignment and sorting
 
@@ -118,9 +118,9 @@
 #below generates the swarm file for splitting bam file\
 `for i in `cat sequence_heads.txt`; do echo "source /b10riii/Tools/conda/etc/profile.d/conda.sh ; module load bamtools ; TMPDIR=/b10riii/ ; cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs ; bamtools merge -in asmfilteredaligned-norm.bam -out "$i".bam -region "$i" ; conda activate pbindex ; pbindex "$i".bam"; done > bam-split-index.swarm`
 
-`swarm -f /data/CaspiWGSData/b10riii/Tools/bam-split-index.swarm`
+`swarm -f /b10riii/Tools/bam-split-index.swarm`
 
-`cut -f1-2 /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai | awk ' { print $1 ":0-" $2 } ' > contigs.txt`
+`cut -f1-2 /b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa.fai | awk ' { print $1 ":0-" $2 } ' > contigs.txt`
 
 #Test command for polishing using split file
 
@@ -158,7 +158,7 @@
 `swarm -f /b10riii/Tools/pilon-bwa.swarm -g 1507 -t 60 --gres=lscratch:600 --partition largemem`
 
 ### 11.3. samtools view/sort/index
-`module load samtools ; cd /data/CaspiWGSData/b10riii/Results/polished/illuminapolished ; samtools view -@ 120 -Sb bwa_mapping_illumina_for_pilon_on_arrow_polished-1.sam > bwa_mapping_illumina_for_pilon_on_arrow_polished-1.bam ; samtools sort -@ 120 -o bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam bwa_mapping_illumina_for_pilon_on_arrow_polished-1.bam ; samtools index -@ 120 bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam`
+`module load samtools ; cd /b10riii/Results/polished/illuminapolished ; samtools view -@ 120 -Sb bwa_mapping_illumina_for_pilon_on_arrow_polished-1.sam > bwa_mapping_illumina_for_pilon_on_arrow_polished-1.bam ; samtools sort -@ 120 -o bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam bwa_mapping_illumina_for_pilon_on_arrow_polished-1.bam ; samtools index -@ 120 bwa_mapping_illumina_for_pilon_on_arrow_polished-1_sorted.bam`
 
 ### 11.4. Parallel pilon
 #below generates the swarm file to split pilon bam, sort and index per contig and run pilon\
@@ -185,221 +185,124 @@
 `conda activate python37`\
 `cd perl-bionano/`\
 `pip install tools/pipeline/1.0/bionano_packages/pyBionano`\
-pip install tools/pipeline/1.0/bionano_packages/SVConfModels
-pip install tools/pipeline/1.0/bionano_packages/lohdetection
-cd /data/CaspiWGSData/b10riii/Tools/
+`pip install tools/pipeline/1.0/bionano_packages/SVConfModels`\
+`pip install tools/pipeline/1.0/bionano_packages/lohdetection`\
+`cd /b10riii/Tools/`
 
-#edited align_molecules.pl to fix python2.7 to python 
-#run bionano-solve-hybrid-batch.sh
-#/home/nagarajanv/Desktop/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/Solve3.7_03302022_283/HybridScaffold/03302022/scripts/align_molecules.pl
+#edited align_molecules.pl to fix python2.7 to python \
+#run bionano-solve-hybrid-batch.sh\
+#/b10riii/Tools/perl-bionano/tools/pipeline/Solve3.7_03302022_283/HybridScaffold/03302022/scripts/align_molecules.pl
 
-singularity shell -B /usr/lib/locale/:/usr/lib/locale/ --bind /data/CaspiWGSData/ singularity-bionano-perl-python-R.sif
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh
-conda activate python37
-cd perl-bionano
-#bionano uses 2.7 in code, but install requires 3.7.7
-ln -s /data/CaspiWGSData/b10riii/Tools/conda/envs/python37/bin/python /data/CaspiWGSData/b10riii/Tools/conda/envs/python37/bin/python2.7
+`source /b10riii/Tools/conda/etc/profile.d/conda.sh`\
+`conda activate python37`\
+`cd perl-bionano`\
+#bionano uses 2.7 in code, but install requires 3.7.7\
+`ln -s /b10riii/Tools/conda/envs/python37/bin/python /b10riii/Tools/conda/envs/python37/bin/python2.7`
 
+### 12.1. Unpolished scaffolding
+`perl /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl -n /b10riii/Results/pacbio/assemblies/defaultfiltered.asm.bp.p_ctg.fa -b /b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap -c /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml -r /b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner -o /b10riii/Results/hybridscaffold/hifiasm-filtered -f -g -B 2 -N 2`
 
-/data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl
--n /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/defaultfiltered.asm.bp.p_ctg.fa
-/data/CaspiWGSData/b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap
-/data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml
-/data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner
-/data/CaspiWGSData/b10riii/Results/hybridscaffold/hifiasm-filtered
+### 12.3. arrow and pilon polished scaffolding
+`perl /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl -n /b10riii/Results/polished/illuminapolished/pilon-parallel/arrow-1-pilon-1-polished-1.fasta -b /b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap -c /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml -r /b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner -o /b10riii/Results/hybridscaffold/arrow-pilon-polished -f -g -B 2 -N 2`
 
--x
--y
--m /data/CaspiWGSData/b10riii/RawData/bionano/Molecule_files/Merged_2Runs_splenocytes_-_Molecule_Merge_RawMolecules.bnx
--p /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/Pipeline/1.0
--q /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/Pipeline/1.0/optArguments.xml
--e /data/CaspiWGSData/b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/auto_noise/autoNoise1.errbin
+### 12.4. arrow-ony polished scaffold
+`perl /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl -n /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/arrow-polished-1/arrow-polished-1.fasta -b /b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap -c /b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml -r /b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner -o /b10riii/Results/hybridscaffold/arrow-only-polished -f -g -B 2 -N 2`
 
+### 12.4. quast with unpolished and polished scaffolds
+`module load quast`\
+`quast.py -o /b10riii/Results/quast/polished-scaffolded /b10riii/Results/hybridscaffold/hifiasm-60-filtered/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_default-60-filtered_asm_bp_p_ctg_fa_NGScontigs_HYBRID_SCAFFOLD.fasta /b10riii/Results/hybridscaffold/arrow-only-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta /b10riii/Results/hybridscaffold/arrow-pilon-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-1-pilon-1-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120`
 
+## 13. Chromosome scaffolding
+`cd /b10riii/Results/chromosome/final/unpolished/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/unpolished-scaffold.fasta -t 120 -nb
 
+cd /b10riii/Results/chromosome/final/arrow/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/arrow-polished-scaffold.fasta -t 120 -nb
 
+cd /b10riii/Results/chromosome/final/arrow-pilon/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/arrow-pilon-polished-scaffold.fasta -t 120 -nb
 
-perl /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl -n /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/defaultfiltered.asm.bp.p_ctg.fa -b /data/CaspiWGSData/b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap -c /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml -r /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner -o /data/CaspiWGSData/b10riii/Results/hybridscaffold/hifiasm-filtered -f -g -B 2 -N 2
+source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/unpolished/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/unpolished-scaffold.fasta -t 120 -o unpolished
 
-Mon Jun 13 22:48:14 EDT 2022, Mon Jun 13 23:28:40 EDT 2022
-# memory usage 1092, cores 64 100% in merging step
-# about 1 hr
+source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/arrow/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/arrow-polished-scaffold.fasta -t 120 -o arrow-polished
 
-# load singularity
+source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/arrow-pilon/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/arrow-pilon-polished-scaffold.fasta -t 120 -o arrow-pilon-polished
 
-cd /data/CaspiWGSData/b10riii/Tools/
-module load singularity
-singularity shell -B /usr/lib/locale/:/usr/lib/locale/ --bind /data/CaspiWGSData/ singularity-bionano-perl-python-R-time-zip.sif
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh
-conda activate python37
-cd perl-bionano
+swarm -f /b10riii/Tools/chromosome-masurca-ragtag.swarm -g 247 -t 28 --gres=lscratch:300
 
 
-/data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl
--n /data/CaspiWGSData/b10riii/Results/polished/illuminapolished/pilon-parallel/arrow-1-pilon-1-polished-1.fasta
-/data/CaspiWGSData/b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap
-/data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml
-/data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner
-/data/CaspiWGSData/b10riii/Results/hybridscaffold/arrow-pilon-polished
-
--x
--y
--m /data/CaspiWGSData/b10riii/RawData/bionano/Molecule_files/Merged_2Runs_splenocytes_-_Molecule_Merge_RawMolecules.bnx
--p /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/Pipeline/1.0
--q /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/Pipeline/1.0/optArguments.xml
--e /data/CaspiWGSData/b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/auto_noise/autoNoise1.errbin
-
-arrow and pilon polished scaffold
-perl /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl -n /data/CaspiWGSData/b10riii/Results/polished/illuminapolished/pilon-parallel/arrow-1-pilon-1-polished-1.fasta -b /data/CaspiWGSData/b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap -c /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml -r /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner -o /data/CaspiWGSData/b10riii/Results/hybridscaffold/arrow-pilon-polished -f -g -B 2 -N 2
-
-arrow-ony polished scaffold
-perl /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold.pl -n /data/CaspiWGSData/b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/arrow-polished-1/arrow-polished-1.fasta -b /data/CaspiWGSData/b10riii/RawData/bionano/Assembly_data_delivery/output/contigs/exp_refineFinal1/EXP_REFINEFINAL1.cmap -c /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/HybridScaffold/1.0/hybridScaffold_DLE1_config.xml -r /data/CaspiWGSData/b10riii/Tools/perl-bionano/tools/pipeline/1.0/RefAligner/1.0/RefAligner -o /data/CaspiWGSData/b10riii/Results/hybridscaffold/arrow-only-polished -f -g -B 2 -N 2
-
-
-=========================
-
-QUAST with unpolished and polished scaffolds
-unpolished scaffold
-/data/CaspiWGSData/b10riii/Results/hybridscaffold/hifiasm-60-filtered/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_default-60-filtered_asm_bp_p_ctg_fa_NGScontigs_HYBRID_SCAFFOLD.fasta
-arrow only polished scaffold
-/data/CaspiWGSData/b10riii/Results/hybridscaffold/arrow-only-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta
-polished scaffold
-/data/CaspiWGSData/b10riii/Results/hybridscaffold/arrow-pilon-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-1-pilon-1-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta
-
-
-module load quast
-quast.py -o /data/CaspiWGSData/b10riii/Results/quast/polished-scaffolded /data/CaspiWGSData/b10riii/Results/hybridscaffold/hifiasm-60-filtered/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_default-60-filtered_asm_bp_p_ctg_fa_NGScontigs_HYBRID_SCAFFOLD.fasta /data/CaspiWGSData/b10riii/Results/hybridscaffold/arrow-only-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta /data/CaspiWGSData/b10riii/Results/hybridscaffold/arrow-pilon-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-1-pilon-1-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120
-
-=================================
-
-Reference based chromosome scaffolder
-/data/CaspiWGSData/b10riii/Tools/MaSuRCA-4.1.0/bin
-
-./../../../Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa -t 120 -nb
-
-# Ragtag based chromosome scaffolder
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/data/CaspiWGSData/b10riii/" ; conda activate ragtag ; /data/CaspiWGSData/b10riii/Results/chromosome/testragtag/ ; ragtag.py scaffold /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa -t 120 -o chromosomeragtagtest
-
-swarm -f /data/CaspiWGSData/b10riii/Tools/chromosome-ragtag.swarm -g 247 -t 28 --gres=lscratch:300
-# an hour
-
-# compare masurca and ragtag quast
-module load quast
-quast.py -o /data/CaspiWGSData/b10riii/Results/quast/chromosome/test-masurca-ragtag /data/CaspiWGSData/b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa /data/CaspiWGSData/b10riii/Results/chromosome/testragtag/chromosomeragtagtest/ragtag.scaffold.fasta /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120
-
-masurca is the best based on n50.
-
-/data/CaspiWGSData/b10riii/Results/hybridscaffold/hifiasm-60-filtered/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_default-60-filtered_asm_bp_p_ctg_fa_NGScontigs_HYBRID_SCAFFOLD.fasta
-/data/CaspiWGSData/b10riii/Results/hybridscaffold/arrow-only-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta 
-/data/CaspiWGSData/b10riii/Results/hybridscaffold/arrow-pilon-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-1-pilon-1-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta
-
-/data/CaspiWGSData/b10riii/Results/chromosome/final
-
-ln -s /data/CaspiWGSData/b10riii/Results/hybridscaffold/hifiasm-60-filtered/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_default-60-filtered_asm_bp_p_ctg_fa_NGScontigs_HYBRID_SCAFFOLD.fasta unpolished-scaffold.fasta
-ln -s /data/CaspiWGSData/b10riii/Results/hybridscaffold/arrow-only-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta arrow-polished-scaffold.fasta
-ln -s /data/CaspiWGSData/b10riii/Results/hybridscaffold/arrow-pilon-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-1-pilon-1-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta arrow-pilon-polished-scaffold.fasta
-
-unpolished-scaffold.fasta
-arrow-polished-scaffold.fasta
-arrow-pilon-polished-scaffold.fasta
-
-cd /data/CaspiWGSData/b10riii/Results/chromosome/final/unpolished/masurca/ ; bash /data/CaspiWGSData/b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /data/CaspiWGSData/b10riii/Results/chromosome/final/unpolished-scaffold.fasta -t 120 -nb
-
-cd /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow/masurca/ ; bash /data/CaspiWGSData/b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow-polished-scaffold.fasta -t 120 -nb
-
-cd /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow-pilon/masurca/ ; bash /data/CaspiWGSData/b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow-pilon-polished-scaffold.fasta -t 120 -nb
-
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/data/CaspiWGSData/b10riii/" ; conda activate ragtag ; cd /data/CaspiWGSData/b10riii/Results/chromosome/final/unpolished/ragtag/ ; ragtag.py scaffold /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /data/CaspiWGSData/b10riii/Results/chromosome/final/unpolished-scaffold.fasta -t 120 -o unpolished
-
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/data/CaspiWGSData/b10riii/" ; conda activate ragtag ; cd /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow/ragtag/ ; ragtag.py scaffold /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow-polished-scaffold.fasta -t 120 -o arrow-polished
-
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/data/CaspiWGSData/b10riii/" ; conda activate ragtag ; cd /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow-pilon/ragtag/ ; ragtag.py scaffold /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow-pilon-polished-scaffold.fasta -t 120 -o arrow-pilon-polished
-
-swarm -f /data/CaspiWGSData/b10riii/Tools/chromosome-ragtag.swarm -g 247 -t 28 --gres=lscratch:300
-
-/data/CaspiWGSData/b10riii/Results/chromosome/final/unpolished/masurca/GCF_000001635.27_GRCm39_genomic.fna.unpolished-scaffold.fasta.split.reconciled.fa
-/data/CaspiWGSData/b10riii/Results/chromosome/final/unpolished/ragtag/ragtag.scaffold.fasta
-/data/CaspiWGSData/b10riii/Results/chromosome/final/arrow/masurca/GCF_000001635.27_GRCm39_genomic.fna.arrow-polished-scaffold.fasta.split.reconciled.fa
-/data/CaspiWGSData/b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta
-/data/CaspiWGSData/b10riii/Results/chromosome/final/arrow-pilon/masurca/GCF_000001635.27_GRCm39_genomic.fna.arrow-pilon-polished-scaffold.fasta.split.reconciled.fa
-/data/CaspiWGSData/b10riii/Results/chromosome/final/arrow-pilon/ragtag/ragtag.scaffold.fasta
-
-chromosome-masurca-ragtag.swarm
 
 #quast for chromosomes unpolished, arrow polished, arrow-pilon polished - both masurca and ragtag
-quast.py -o /data/CaspiWGSData/b10riii/Results/quast/chromosome/final /data/CaspiWGSData/b10riii/Results/chromosome/final/unpolished/masurca/GCF_000001635.27_GRCm39_genomic.fna.unpolished-scaffold.fasta.split.reconciled.fa /data/CaspiWGSData/b10riii/Results/chromosome/final/unpolished/ragtag/ragtag.scaffold.fasta /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow/masurca/GCF_000001635.27_GRCm39_genomic.fna.arrow-polished-scaffold.fasta.split.reconciled.fa /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow-pilon/masurca/GCF_000001635.27_GRCm39_genomic.fna.arrow-pilon-polished-scaffold.fasta.split.reconciled.fa /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow-pilon/ragtag/ragtag.scaffold.fasta /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 200
+quast.py -o /b10riii/Results/quast/chromosome/final /b10riii/Results/chromosome/final/unpolished/masurca/GCF_000001635.27_GRCm39_genomic.fna.unpolished-scaffold.fasta.split.reconciled.fa /b10riii/Results/chromosome/final/unpolished/ragtag/ragtag.scaffold.fasta /b10riii/Results/chromosome/final/arrow/masurca/GCF_000001635.27_GRCm39_genomic.fna.arrow-polished-scaffold.fasta.split.reconciled.fa /b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta /b10riii/Results/chromosome/final/arrow-pilon/masurca/GCF_000001635.27_GRCm39_genomic.fna.arrow-pilon-polished-scaffold.fasta.split.reconciled.fa /b10riii/Results/chromosome/final/arrow-pilon/ragtag/ragtag.scaffold.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 200
 
 ======================
 #Busco
 #Use custom conda install busco5, not the biowulf
 
-busco -c 120 -m genome -l glires_odb10 -i /data/CaspiWGSData/b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa -o test
+busco -c 120 -m genome -l glires_odb10 -i /b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa -o test
 
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/data/CaspiWGSData/b10riii/" ; conda activate busco5 ; cd /data/CaspiWGSData/b10riii/Results/busco ; busco -c 120 -m genome -l glires_odb10 -i /data/CaspiWGSData/b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa -o test
+source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate busco5 ; cd /b10riii/Results/busco ; busco -c 120 -m genome -l glires_odb10 -i /b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa -o test
 
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/data/CaspiWGSData/b10riii/" ; conda activate busco5 ; cd /data/CaspiWGSData/b10riii/Results/busco ; busco -c 120 -m genome --auto-lineage-euk -i /data/CaspiWGSData/b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa -o testautoeuk
+source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate busco5 ; cd /b10riii/Results/busco ; busco -c 120 -m genome --auto-lineage-euk -i /b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa -o testautoeuk
 
-swarm -f /data/CaspiWGSData/b10riii/Tools/busco-hifiasm-60-filtered.sbatch -g 247 -t 28 --gres=lscratch:300
+swarm -f /b10riii/Tools/busco-hifiasm-60-filtered.sbatch -g 247 -t 28 --gres=lscratch:300
 # less than 12 hours 96% complete test chromosome
 
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/data/CaspiWGSData/b10riii/" ; conda activate busco5 ; cd /data/CaspiWGSData/b10riii/Results/busco ; busco -c 120 -m genome --auto-lineage-euk -i /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -o testautoeuk-mm39
+source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate busco5 ; cd /b10riii/Results/busco ; busco -c 120 -m genome --auto-lineage-euk -i /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -o testautoeuk-mm39
 
 # RUN EUK busco and gliers both
 
 busco-final.swarm
 
-ln -s /data/CaspiWGSData/b10riii/Results/busco/arrow-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-ma-auto.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/arrow-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-ma-gliers.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/arrow-pilon-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-pilon-ma-auto.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/arrow-pilon-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-pilon-ma-gliers.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/arrow-pilon-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-pilon-rag-auto.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/arrow-pilon-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-pilon-rag-gliers.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/arrow-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-rag-auto.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/arrow-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-rag-gliers.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/ref-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_ref-auto.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/ref-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_ref-gliers.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/unpolished-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-ma-auto.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/unpolished-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-ma-gliers.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/unpolished-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-rag-auto.txt
-ln -s /data/CaspiWGSData/b10riii/Results/busco/unpolished-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-rag-gliers.txt
+ln -s /b10riii/Results/busco/arrow-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-ma-auto.txt
+ln -s /b10riii/Results/busco/arrow-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-ma-gliers.txt
+ln -s /b10riii/Results/busco/arrow-pilon-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-pilon-ma-auto.txt
+ln -s /b10riii/Results/busco/arrow-pilon-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-pilon-ma-gliers.txt
+ln -s /b10riii/Results/busco/arrow-pilon-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-pilon-rag-auto.txt
+ln -s /b10riii/Results/busco/arrow-pilon-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-pilon-rag-gliers.txt
+ln -s /b10riii/Results/busco/arrow-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-rag-auto.txt
+ln -s /b10riii/Results/busco/arrow-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-rag-gliers.txt
+ln -s /b10riii/Results/busco/ref-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_ref-auto.txt
+ln -s /b10riii/Results/busco/ref-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_ref-gliers.txt
+ln -s /b10riii/Results/busco/unpolished-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-ma-auto.txt
+ln -s /b10riii/Results/busco/unpolished-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-ma-gliers.txt
+ln -s /b10riii/Results/busco/unpolished-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-rag-auto.txt
+ln -s /b10riii/Results/busco/unpolished-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-rag-gliers.txt
 
 mutliqc results for above;
-/data/CaspiWGSData/b10riii/Results/busco/allsummaries/multiqc_report.html
+/b10riii/Results/busco/allsummaries/multiqc_report.html
 
 Final, best N50, best busco - gliers - arrow only
-/data/CaspiWGSData/b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta
+/b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta
 
 -------------
 quast on arrow-ragtag and reference
-quast.py -o /data/CaspiWGSData/b10riii/Results/quast/chromosome/final-one /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta /data/CaspiWGSData/b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 200
+quast.py -o /b10riii/Results/quast/chromosome/final-one /b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 200
 
 busco on arrow-ragtag only
-source /data/CaspiWGSData/b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/data/CaspiWGSData/b10riii/" ; conda activate busco5 ; cd /data/CaspiWGSData/b10riii/Results/busco ; busco -c 20 -m genome -l glires_odb10 -i /data/CaspiWGSData/b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta -o arrow-ragtag-gliers-only-mm39
+source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate busco5 ; cd /b10riii/Results/busco ; busco -c 20 -m genome -l glires_odb10 -i /b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta -o arrow-ragtag-gliers-only-mm39
 
 --------------
 Rename chromosome numbers
 
-/data/CaspiWGSData/b10riii/Results/b10riii.fa
+/b10riii/Results/b10riii.fa
 
-sed -i 's/NW_023337853.1_RagTag/bNW_023337853.1 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
+sed -i 's/NW_023337853.1_RagTag/bNW_023337853.1 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
 
-sed -i 's/Super-Scaffold_100310/Super-Scaffold_100310 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_100970/Super-Scaffold_100970 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_17/Super-Scaffold_17 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_187/Super-Scaffold_187 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_191/Super-Scaffold_191 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_202/Super-Scaffold_202 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_295/Super-Scaffold_295 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_329/Super-Scaffold_329 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_40/Super-Scaffold_40 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_45/Super-Scaffold_45 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_587/Super-Scaffold_587 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_61/Super-Scaffold_61 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_71/Super-Scaffold_71 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_74/Super-Scaffold_74 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_77/Super-Scaffold_77 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_78/Super-Scaffold_78 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_79/Super-Scaffold_79 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_100310/Super-Scaffold_100310 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_100970/Super-Scaffold_100970 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_17/Super-Scaffold_17 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_187/Super-Scaffold_187 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_191/Super-Scaffold_191 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_202/Super-Scaffold_202 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_295/Super-Scaffold_295 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_329/Super-Scaffold_329 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_40/Super-Scaffold_40 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_45/Super-Scaffold_45 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_587/Super-Scaffold_587 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_61/Super-Scaffold_61 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_71/Super-Scaffold_71 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_74/Super-Scaffold_74 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_77/Super-Scaffold_77 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_78/Super-Scaffold_78 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/Super-Scaffold_79/Super-Scaffold_79 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
 
 
 >bNC_000067.7 Mus musculus strain B10.RIII chromosome 1
@@ -445,35 +348,35 @@ sed -i 's/Super-Scaffold_79/Super-Scaffold_79 Mus musculus strain B10RIII unplac
 >Super-Scaffold_79 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
 
 
-sed -i 's/bNW_023337853.1/RC853 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNT_187064.1/RC064 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNT_165789.3/RC789 Mus musculus strain B10RIII chromosome X unlocalized genomic scaffold/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000087.8/RC087 Mus musculus strain B10RIII chromosome Y/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000086.8/RC086 Mus musculus strain B10RIII chromosome X/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000085.7/RC085 Mus musculus strain B10RIII chromosome 19/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000084.7/RC084 Mus musculus strain B10RIII chromosome 18/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000083.7/RC083 Mus musculus strain B10RIII chromosome 17/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000082.7/RC082 Mus musculus strain B10RIII chromosome 16/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000081.7/RC081 Mus musculus strain B10RIII chromosome 15/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000080.7/RC080 Mus musculus strain B10RIII chromosome 14/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000079.7/RC079 Mus musculus strain B10RIII chromosome 13/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000078.7/RC078 Mus musculus strain B10RIII chromosome 12/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000077.7/RC077 Mus musculus strain B10RIII chromosome 11/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000076.7/RC076 Mus musculus strain B10RIII chromosome 10/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000075.7/RC075 Mus musculus strain B10RIII chromosome 9/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000074.7/RC074 Mus musculus strain B10RIII chromosome 8/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000073.7/RC073 Mus musculus strain B10RIII chromosome 7/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000072.7/RC072 Mus musculus strain B10RIII chromosome 6/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000071.7/RC071 Mus musculus strain B10RIII chromosome 5/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000070.7/RC070 Mus musculus strain B10RIII chromosome 4/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000069.7/RC069 Mus musculus strain B10RIII chromosome 3/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000068.8/RC068 Mus musculus strain B10RIII chromosome 2/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
-sed -i 's/bNC_000067.7/RC067 Mus musculus strain B10RIII chromosome 1/g' /data/CaspiWGSData/b10riii/Results/b10riii.fa
+sed -i 's/bNW_023337853.1/RC853 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNT_187064.1/RC064 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNT_165789.3/RC789 Mus musculus strain B10RIII chromosome X unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000087.8/RC087 Mus musculus strain B10RIII chromosome Y/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000086.8/RC086 Mus musculus strain B10RIII chromosome X/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000085.7/RC085 Mus musculus strain B10RIII chromosome 19/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000084.7/RC084 Mus musculus strain B10RIII chromosome 18/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000083.7/RC083 Mus musculus strain B10RIII chromosome 17/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000082.7/RC082 Mus musculus strain B10RIII chromosome 16/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000081.7/RC081 Mus musculus strain B10RIII chromosome 15/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000080.7/RC080 Mus musculus strain B10RIII chromosome 14/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000079.7/RC079 Mus musculus strain B10RIII chromosome 13/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000078.7/RC078 Mus musculus strain B10RIII chromosome 12/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000077.7/RC077 Mus musculus strain B10RIII chromosome 11/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000076.7/RC076 Mus musculus strain B10RIII chromosome 10/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000075.7/RC075 Mus musculus strain B10RIII chromosome 9/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000074.7/RC074 Mus musculus strain B10RIII chromosome 8/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000073.7/RC073 Mus musculus strain B10RIII chromosome 7/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000072.7/RC072 Mus musculus strain B10RIII chromosome 6/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000071.7/RC071 Mus musculus strain B10RIII chromosome 5/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000070.7/RC070 Mus musculus strain B10RIII chromosome 4/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000069.7/RC069 Mus musculus strain B10RIII chromosome 3/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000068.8/RC068 Mus musculus strain B10RIII chromosome 2/g' /b10riii/Results/b10riii.fa
+sed -i 's/bNC_000067.7/RC067 Mus musculus strain B10RIII chromosome 1/g' /b10riii/Results/b10riii.fa
 
 
 
 #### Annotation
-cd /data/CaspiWGSData/b10riii/Results/annotation
+cd /b10riii/Results/annotation
 https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Mus_musculus/annotation_releases/current/GCF_000001635.27-RS_2023_04/
 https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Mus_musculus/annotation_releases/current/GCF_000001635.27-RS_2023_04/GCF_000001635.27_GRCm39_genomic.fna.gz
 https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Mus_musculus/annotation_releases/current/GCF_000001635.27-RS_2023_04/GCF_000001635.27_GRCm39_genomic.gff.gz
@@ -492,7 +395,7 @@ The ncbi feature_types.txt has more feature types.
 liftoff -g GCF_000001635.27_GRCm39_genomic.gff -o b10.gff3 -polish -chroms chromosomes.txt -f feature_types.txt -copies -p 55 -m /usr/local/apps/minimap2/2.26/minimap2 GCA_030265425.1_NEI_Mmus_1.0_genomic.fna GCF_000001635.27_GRCm39_genomic.fna
 
 # about 2 days
-/data/CaspiWGSData/b10riii/Results/annotation/swarmannotation/liftoff.swarm
+/b10riii/Results/annotation/swarmannotation/liftoff.swarm
 
 # comparison
 
