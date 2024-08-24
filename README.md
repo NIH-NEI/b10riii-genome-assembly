@@ -1,4 +1,4 @@
-# b10riii-genome-assembly
+# B10.RIII Genome Assembly Workflow
 
 ## 1. Short reads - kmer estimation
 `sinteractive --cpus-per-task=60 --mem=1507g --gres=lscratch:300`\
@@ -213,45 +213,30 @@
 `quast.py -o /b10riii/Results/quast/polished-scaffolded /b10riii/Results/hybridscaffold/hifiasm-60-filtered/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_default-60-filtered_asm_bp_p_ctg_fa_NGScontigs_HYBRID_SCAFFOLD.fasta /b10riii/Results/hybridscaffold/arrow-only-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta /b10riii/Results/hybridscaffold/arrow-pilon-polished/hybrid_scaffolds/EXP_REFINEFINAL1_bppAdjust_cmap_arrow-1-pilon-1-polished-1_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120`
 
 ## 13. Chromosome scaffolding
-`cd /b10riii/Results/chromosome/final/unpolished/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/unpolished-scaffold.fasta -t 120 -nb
+`cd /b10riii/Results/chromosome/final/unpolished/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/unpolished-scaffold.fasta -t 120 -nb`
 
-cd /b10riii/Results/chromosome/final/arrow/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/arrow-polished-scaffold.fasta -t 120 -nb
+`cd /b10riii/Results/chromosome/final/arrow/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/arrow-polished-scaffold.fasta -t 120 -nb`
 
-cd /b10riii/Results/chromosome/final/arrow-pilon/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/arrow-pilon-polished-scaffold.fasta -t 120 -nb
+`cd /b10riii/Results/chromosome/final/arrow-pilon/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/arrow-pilon-polished-scaffold.fasta -t 120 -nb`
 
-source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/unpolished/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/unpolished-scaffold.fasta -t 120 -o unpolished
+`source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/unpolished/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/unpolished-scaffold.fasta -t 120 -o unpolished`
 
-source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/arrow/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/arrow-polished-scaffold.fasta -t 120 -o arrow-polished
+`source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/arrow/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/arrow-polished-scaffold.fasta -t 120 -o arrow-polished`
 
-source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/arrow-pilon/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/arrow-pilon-polished-scaffold.fasta -t 120 -o arrow-pilon-polished
+`source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/arrow-pilon/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/arrow-pilon-polished-scaffold.fasta -t 120 -o arrow-pilon-polished`
 
-swarm -f /b10riii/Tools/chromosome-masurca-ragtag.swarm -g 247 -t 28 --gres=lscratch:300
+`swarm -f /b10riii/Tools/chromosome-masurca-ragtag.swarm -g 247 -t 28 --gres=lscratch:300`
 
+### 13.1. quast for chromosomes unpolished, arrow polished, arrow-pilon polished - both masurca and ragtag
+`quast.py -o /b10riii/Results/quast/chromosome/final /b10riii/Results/chromosome/final/unpolished/masurca/GCF_000001635.27_GRCm39_genomic.fna.unpolished-scaffold.fasta.split.reconciled.fa /b10riii/Results/chromosome/final/unpolished/ragtag/ragtag.scaffold.fasta /b10riii/Results/chromosome/final/arrow/masurca/GCF_000001635.27_GRCm39_genomic.fna.arrow-polished-scaffold.fasta.split.reconciled.fa /b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta /b10riii/Results/chromosome/final/arrow-pilon/masurca/GCF_000001635.27_GRCm39_genomic.fna.arrow-pilon-polished-scaffold.fasta.split.reconciled.fa /b10riii/Results/chromosome/final/arrow-pilon/ragtag/ragtag.scaffold.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 200`
 
+## 14. Busco completeness analysis
+`source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate busco5 ; cd /b10riii/Results/busco ; busco -c 120 -m genome -l glires_odb10 -i /b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa -o test`
 
-#quast for chromosomes unpolished, arrow polished, arrow-pilon polished - both masurca and ragtag
-quast.py -o /b10riii/Results/quast/chromosome/final /b10riii/Results/chromosome/final/unpolished/masurca/GCF_000001635.27_GRCm39_genomic.fna.unpolished-scaffold.fasta.split.reconciled.fa /b10riii/Results/chromosome/final/unpolished/ragtag/ragtag.scaffold.fasta /b10riii/Results/chromosome/final/arrow/masurca/GCF_000001635.27_GRCm39_genomic.fna.arrow-polished-scaffold.fasta.split.reconciled.fa /b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta /b10riii/Results/chromosome/final/arrow-pilon/masurca/GCF_000001635.27_GRCm39_genomic.fna.arrow-pilon-polished-scaffold.fasta.split.reconciled.fa /b10riii/Results/chromosome/final/arrow-pilon/ragtag/ragtag.scaffold.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 200
+### 14.1. RUN BUSCO euk and gliers for both musurca and ragtag
+`swarm -f /b10riii/Tools/busco-final.swarm -g 247 -t 28 --gres=lscratch:300`
 
-======================
-#Busco
-#Use custom conda install busco5, not the biowulf
-
-busco -c 120 -m genome -l glires_odb10 -i /b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa -o test
-
-source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate busco5 ; cd /b10riii/Results/busco ; busco -c 120 -m genome -l glires_odb10 -i /b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa -o test
-
-source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate busco5 ; cd /b10riii/Results/busco ; busco -c 120 -m genome --auto-lineage-euk -i /b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa -o testautoeuk
-
-swarm -f /b10riii/Tools/busco-hifiasm-60-filtered.sbatch -g 247 -t 28 --gres=lscratch:300
-# less than 12 hours 96% complete test chromosome
-
-source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate busco5 ; cd /b10riii/Results/busco ; busco -c 120 -m genome --auto-lineage-euk -i /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -o testautoeuk-mm39
-
-# RUN EUK busco and gliers both
-
-busco-final.swarm
-
-ln -s /b10riii/Results/busco/arrow-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-ma-auto.txt
+`ln -s /b10riii/Results/busco/arrow-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-ma-auto.txt
 ln -s /b10riii/Results/busco/arrow-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-ma-gliers.txt
 ln -s /b10riii/Results/busco/arrow-pilon-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-pilon-ma-auto.txt
 ln -s /b10riii/Results/busco/arrow-pilon-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-pilon-ma-gliers.txt
@@ -264,15 +249,8 @@ ln -s /b10riii/Results/busco/ref-gliers-mm39/run_glires_odb10/short_summary.txt 
 ln -s /b10riii/Results/busco/unpolished-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-ma-auto.txt
 ln -s /b10riii/Results/busco/unpolished-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-ma-gliers.txt
 ln -s /b10riii/Results/busco/unpolished-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-rag-auto.txt
-ln -s /b10riii/Results/busco/unpolished-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-rag-gliers.txt
+ln -s /b10riii/Results/busco/unpolished-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-rag-gliers.txt`
 
-mutliqc results for above;
-/b10riii/Results/busco/allsummaries/multiqc_report.html
-
-Final, best N50, best busco - gliers - arrow only
-/b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta
-
--------------
 quast on arrow-ragtag and reference
 quast.py -o /b10riii/Results/quast/chromosome/final-one /b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 200
 
