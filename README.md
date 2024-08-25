@@ -236,25 +236,25 @@
 ### 14.1. RUN BUSCO euk and gliers for both musurca and ragtag
 `swarm -f /b10riii/Tools/busco-final.swarm -g 247 -t 28 --gres=lscratch:300`
 
-`ln -s /b10riii/Results/busco/arrow-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-ma-auto.txt`
-`ln -s /b10riii/Results/busco/arrow-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-ma-gliers.txt`
-`ln -s /b10riii/Results/busco/arrow-pilon-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-pilon-ma-auto.txt`
-`ln -s /b10riii/Results/busco/arrow-pilon-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-pilon-ma-gliers.txt`
-`ln -s /b10riii/Results/busco/arrow-pilon-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-pilon-rag-auto.txt`
-`ln -s /b10riii/Results/busco/arrow-pilon-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-pilon-rag-gliers.txt`
-`ln -s /b10riii/Results/busco/arrow-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-rag-auto.txt`
-`ln -s /b10riii/Results/busco/arrow-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-rag-gliers.txt`
-`ln -s /b10riii/Results/busco/ref-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_ref-auto.txt`
-`ln -s /b10riii/Results/busco/ref-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_ref-gliers.txt`
-`ln -s /b10riii/Results/busco/unpolished-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-ma-auto.txt`
-`ln -s /b10riii/Results/busco/unpolished-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-ma-gliers.txt`
-`ln -s /b10riii/Results/busco/unpolished-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-rag-auto.txt`
-`ln -s /b10riii/Results/busco/unpolished-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-rag-gliers.txt`
+`ln -s /b10riii/Results/busco/arrow-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-ma-auto.txt`\
+`ln -s /b10riii/Results/busco/arrow-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-ma-gliers.txt`\
+`ln -s /b10riii/Results/busco/arrow-pilon-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-pilon-ma-auto.txt`\
+`ln -s /b10riii/Results/busco/arrow-pilon-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-pilon-ma-gliers.txt`\
+`ln -s /b10riii/Results/busco/arrow-pilon-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-pilon-rag-auto.txt`\
+`ln -s /b10riii/Results/busco/arrow-pilon-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-pilon-rag-gliers.txt`\
+`ln -s /b10riii/Results/busco/arrow-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_arrow-rag-auto.txt`\
+`ln -s /b10riii/Results/busco/arrow-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_arrow-rag-gliers.txt`\
+`ln -s /b10riii/Results/busco/ref-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_ref-auto.txt`\
+`ln -s /b10riii/Results/busco/ref-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_ref-gliers.txt`\
+`ln -s /b10riii/Results/busco/unpolished-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-ma-auto.txt`\
+`ln -s /b10riii/Results/busco/unpolished-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-ma-gliers.txt`\
+`ln -s /b10riii/Results/busco/unpolished-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-rag-auto.txt`\
+`ln -s /b10riii/Results/busco/unpolished-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-rag-gliers.txt`\
 
-#quast on arrow-ragtag and reference
+#quast on arrow-ragtag and reference\
 `quast.py -o /b10riii/Results/quast/chromosome/final-one /b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 200`
 
-#busco on arrow-ragtag only
+#busco on arrow-ragtag only\
 `source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate busco5 ; cd /b10riii/Results/busco ; busco -c 20 -m genome -l glires_odb10 -i /b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta -o arrow-ragtag-gliers-only-mm39`
 
 ## 15. Rename chromosome numbers
