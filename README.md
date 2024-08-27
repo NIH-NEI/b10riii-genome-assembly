@@ -1,7 +1,7 @@
 # B10.RIII Genome Assembly Workflow
 ---
 This repository provides the detailed workflow used to assemble the B10.RIII genome.\
-The tools/scripts used in the workflow are provided in the 'Tools' folder.
+The tools/scripts used in the workflow are provided in the [Tools](Tools) folder.
 
 ---
 
