@@ -249,7 +249,7 @@
 `ln -s /b10riii/Results/busco/unpolished-masurca-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-ma-auto.txt`\
 `ln -s /b10riii/Results/busco/unpolished-masurca-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-ma-gliers.txt`\
 `ln -s /b10riii/Results/busco/unpolished-ragtag-autoeuk-mm39/auto_lineage/run_eukaryota_odb10/short_summary.txt short_summary_unpolished-rag-auto.txt`\
-`ln -s /b10riii/Results/busco/unpolished-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-rag-gliers.txt`\
+`ln -s /b10riii/Results/busco/unpolished-ragtag-gliers-mm39/run_glires_odb10/short_summary.txt short_summary_unpolished-rag-gliers.txt`
 
 #quast on arrow-ragtag and reference\
 `quast.py -o /b10riii/Results/quast/chromosome/final-one /b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 200`
@@ -257,138 +257,20 @@
 #busco on arrow-ragtag only\
 `source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate busco5 ; cd /b10riii/Results/busco ; busco -c 20 -m genome -l glires_odb10 -i /b10riii/Results/chromosome/final/arrow/ragtag/ragtag.scaffold.fasta -o arrow-ragtag-gliers-only-mm39`
 
-## 15. Rename chromosome numbers
+## 15. Reference based Annotation
 
-/b10riii/Results/b10riii.fa
+`wget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Mus_musculus/annotation_releases/current/GCF_000001635.27-RS_2023_04/GCF_000001635.27_GRCm39_genomic.fna.gz`\
+`wget https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Mus_musculus/annotation_releases/current/GCF_000001635.27-RS_2023_04/GCF_000001635.27_GRCm39_genomic.gff.gz`\
+`wget https://ftp.ncbi.nlm.nih.gov/genomes/genbank/vertebrate_mammalian/Mus_musculus/latest_assembly_versions/GCA_030265425.1_NEI_Mmus_1.0/GCA_030265425.1_NEI_Mmus_1.0_genomic.fna.gz`
 
-sed -i 's/NW_023337853.1_RagTag/bNW_023337853.1 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+### 15.1. Feature types prep
+`cut -f 3 GCF_000001635.27_GRCm39_genomic.gff | sort | uniq > feature_types.txt`
 
-sed -i 's/Super-Scaffold_100310/Super-Scaffold_100310 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_100970/Super-Scaffold_100970 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_17/Super-Scaffold_17 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_187/Super-Scaffold_187 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_191/Super-Scaffold_191 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_202/Super-Scaffold_202 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_295/Super-Scaffold_295 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_329/Super-Scaffold_329 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_40/Super-Scaffold_40 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_45/Super-Scaffold_45 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_587/Super-Scaffold_587 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_61/Super-Scaffold_61 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_71/Super-Scaffold_71 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_74/Super-Scaffold_74 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_77/Super-Scaffold_77 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_78/Super-Scaffold_78 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/Super-Scaffold_79/Super-Scaffold_79 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
+`liftoff -g GCF_000001635.27_GRCm39_genomic.gff -o b10.gff3 -polish -chroms chromosomes.txt -f feature_types.txt -copies -p 55 -m /usr/local/apps/minimap2/2.26/minimap2 GCA_030265425.1_NEI_Mmus_1.0_genomic.fna GCF_000001635.27_GRCm39_genomic.fna`
 
-
->bNC_000067.7 Mus musculus strain B10.RIII chromosome 1
->bNC_000068.8 Mus musculus strain B10.RIII chromosome 2
->bNC_000069.7 Mus musculus strain B10.RIII chromosome 3
->bNC_000070.7 Mus musculus strain B10.RIII chromosome 4
->bNC_000071.7 Mus musculus strain B10.RIII chromosome 5
->bNC_000072.7 Mus musculus strain B10.RIII chromosome 6
->bNC_000073.7 Mus musculus strain B10.RIII chromosome 7
->bNC_000074.7 Mus musculus strain B10.RIII chromosome 8
->bNC_000075.7 Mus musculus strain B10.RIII chromosome 9
->bNC_000076.7 Mus musculus strain B10.RIII chromosome 10
->bNC_000077.7 Mus musculus strain B10.RIII chromosome 11
->bNC_000078.7 Mus musculus strain B10.RIII chromosome 12
->bNC_000079.7 Mus musculus strain B10.RIII chromosome 13
->bNC_000080.7 Mus musculus strain B10.RIII chromosome 14
->bNC_000081.7 Mus musculus strain B10.RIII chromosome 15
->bNC_000082.7 Mus musculus strain B10.RIII chromosome 16
->bNC_000083.7 Mus musculus strain B10.RIII chromosome 17
->bNC_000084.7 Mus musculus strain B10.RIII chromosome 18
->bNC_000085.7 Mus musculus strain B10.RIII chromosome 19
->bNC_000086.8 Mus musculus strain B10.RIII chromosome X
->bNC_000087.8 Mus musculus strain B10.RIII chromosome Y
->bNT_165789.3 Mus musculus strain B10.RIII chromosome X unlocalized genomic scaffold
->bNT_187064.1 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->bNW_023337853.1 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_100310 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_100970 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_17 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_187 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_191 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_202 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_295 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_329 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_40 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_45 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_587 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_61 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_71 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_74 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_77 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_78 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
->Super-Scaffold_79 Mus musculus strain B10.RIII unplaced unlocalized genomic scaffold
-
-
-sed -i 's/bNW_023337853.1/RC853 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNT_187064.1/RC064 Mus musculus strain B10RIII unplaced unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNT_165789.3/RC789 Mus musculus strain B10RIII chromosome X unlocalized genomic scaffold/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000087.8/RC087 Mus musculus strain B10RIII chromosome Y/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000086.8/RC086 Mus musculus strain B10RIII chromosome X/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000085.7/RC085 Mus musculus strain B10RIII chromosome 19/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000084.7/RC084 Mus musculus strain B10RIII chromosome 18/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000083.7/RC083 Mus musculus strain B10RIII chromosome 17/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000082.7/RC082 Mus musculus strain B10RIII chromosome 16/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000081.7/RC081 Mus musculus strain B10RIII chromosome 15/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000080.7/RC080 Mus musculus strain B10RIII chromosome 14/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000079.7/RC079 Mus musculus strain B10RIII chromosome 13/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000078.7/RC078 Mus musculus strain B10RIII chromosome 12/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000077.7/RC077 Mus musculus strain B10RIII chromosome 11/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000076.7/RC076 Mus musculus strain B10RIII chromosome 10/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000075.7/RC075 Mus musculus strain B10RIII chromosome 9/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000074.7/RC074 Mus musculus strain B10RIII chromosome 8/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000073.7/RC073 Mus musculus strain B10RIII chromosome 7/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000072.7/RC072 Mus musculus strain B10RIII chromosome 6/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000071.7/RC071 Mus musculus strain B10RIII chromosome 5/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000070.7/RC070 Mus musculus strain B10RIII chromosome 4/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000069.7/RC069 Mus musculus strain B10RIII chromosome 3/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000068.8/RC068 Mus musculus strain B10RIII chromosome 2/g' /b10riii/Results/b10riii.fa
-sed -i 's/bNC_000067.7/RC067 Mus musculus strain B10RIII chromosome 1/g' /b10riii/Results/b10riii.fa
-
-
-
-#### Annotation
-cd /b10riii/Results/annotation
-https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Mus_musculus/annotation_releases/current/GCF_000001635.27-RS_2023_04/
-https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Mus_musculus/annotation_releases/current/GCF_000001635.27-RS_2023_04/GCF_000001635.27_GRCm39_genomic.fna.gz
-https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Mus_musculus/annotation_releases/current/GCF_000001635.27-RS_2023_04/GCF_000001635.27_GRCm39_genomic.gff.gz
-https://ftp.ncbi.nlm.nih.gov/genomes/genbank/vertebrate_mammalian/Mus_musculus/latest_assembly_versions/GCA_030265425.1_NEI_Mmus_1.0/GCA_030265425.1_NEI_Mmus_1.0_genomic.fna.gz
-https://www.gencodegenes.org/mouse/
-
-feature types prep
-cut -f 3 GCF_000001635.27_GRCm39_genomic.gff | sort | uniq > feature_types.txt
-cut -f 3 gencode.vM33.chr_patch_hapl_scaff.annotation.gff3 | sort | uniq > feature_types_gencode.txt
-
-The ncbi feature_types.txt has more feature types.
-
-#liftoff -g GCF_000001635.27_GRCm39_genomic.gff -o b10.gff3 -polish -chroms chromosomes.txt -mm2_options="-t 55" -f feature_types.txt -copies -p 55 -m /usr/local/apps/minimap2/2.26/minimap2 GCA_030265425.1_NEI_Mmus_1.0_genomic.fna GCF_000001635.27_GRCm39_genomic.fna
-
-# run as swarm
-liftoff -g GCF_000001635.27_GRCm39_genomic.gff -o b10.gff3 -polish -chroms chromosomes.txt -f feature_types.txt -copies -p 55 -m /usr/local/apps/minimap2/2.26/minimap2 GCA_030265425.1_NEI_Mmus_1.0_genomic.fna GCF_000001635.27_GRCm39_genomic.fna
-
-# about 2 days
-/b10riii/Results/annotation/swarmannotation/liftoff.swarm
-
-# comparison
-
-liftofftools all -r GCF_000001635.27_GRCm39_genomic.fna -t GCA_030265425.1_NEI_Mmus_1.0_genomic.fna -rg GCF_000001635.27_GRCm39_genomic.gff -tg b10_swarm.gff3_db
-
-module load python/3.8
-import gffutils
-fn = gffutils.example_filename('/vf/users/CaspiWGSData/b10riii/Results/annotation/swarmannotation/b10_swarm.gff3_polished')
-#db = gffutils.create_db(fn,'b10_swarm.gff3_db',force=True, keep_order=True,merge_strategy='create_unique', sort_attribute_values=True)
-db = gffutils.create_db(fn,'b10_swarm.gff3_polished_db',merge_strategy="warning")
-
-module load agat 0.8.0
-agat_sp_statistics.pl --gff b10_swarm.gff3
-
-
-
-
+### 15.2. Annotation comparison
+`liftofftools all -r GCF_000001635.27_GRCm39_genomic.fna -t GCA_030265425.1_NEI_Mmus_1.0_genomic.fna -rg GCF_000001635.27_GRCm39_genomic.gff -tg b10_swarm.gff3_db`\
+`module load agat 0.8.0`\
+`agat_sp_statistics.pl --gff b10_swarm.gff3`
 
 
