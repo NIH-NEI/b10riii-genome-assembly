@@ -1,0 +1,1 @@
+module load bwa ; cd /b10riii/Results/polished/illuminapolished ; bwa mem -t 120 arrow-polished-1.fasta F1_S1_R1_001.trimmed.fastq.gz F1_S1_R2_001.trimmed.fastq.gz -o bwa_mapping_illumina_for_pilon_on_arrow_polished-1.sam

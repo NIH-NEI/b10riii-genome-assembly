@@ -1,0 +1,11 @@
+cd /b10riii/Results/chromosome/final/unpolished/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/unpolished-scaffold.fasta -t 120 -nb
+
+cd /b10riii/Results/chromosome/final/arrow/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/arrow-polished-scaffold.fasta -t 120 -nb
+
+cd /b10riii/Results/chromosome/final/arrow-pilon/masurca/ ; bash /b10riii/Tools/MaSuRCA-4.1.0/bin/chromosome_scaffolder.sh -r /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna -q /b10riii/Results/chromosome/final/arrow-pilon-polished-scaffold.fasta -t 120 -nb
+
+source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/unpolished/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/unpolished-scaffold.fasta -t 120 -o arrow-polished
+
+source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/arrow/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/arrow-polished-scaffold.fasta -t 120 -o arrow-polished
+
+source /b10riii/Tools/conda/etc/profile.d/conda.sh ; TMPDIR="/b10riii/" ; conda activate ragtag ; cd /b10riii/Results/chromosome/final/arrow-pilon/ragtag/ ; ragtag.py scaffold /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna /b10riii/Results/chromosome/final/arrow-pilon-polished-scaffold.fasta -t 120 -o arrow-pilon-polished

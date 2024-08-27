@@ -1,0 +1,3 @@
+source /b10riii/Tools/conda/etc/profile.d/conda.sh ; conda activate pbmm2 ; TMPDIR="/b10riii/" ; cd /b10riii/Results/polished/pacbiopolished/gcpp-parallel/alignments ; pbmm2 align /b10riii/Results/polished/pacbiopolished/gcpp-parallel/ptg000001l.fa /b10riii/Results/polished/pacbiopolished/subreadbams.fofn asmdefaultfiltered-norm-aligned-ptg000001l.bam --sort -j 56 -J 30 -m 8G --preset SUBREAD --log-level DEBUG --log-file asmdefaultfiltered-norm-aligned-ptg000001l.log
+
+

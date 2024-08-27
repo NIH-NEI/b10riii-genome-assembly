@@ -1,0 +1,1 @@
+module load pilon ; TMPDIR=/b10riii/ ; cd /b10riii/Results/polished/illuminapolished/pilon-parallel ; java -Xmx1500G -jar /usr/local/apps/pilon/1.24/pilon-1.24.jar --genome ptg000058l\|arrow.fa --bam ptg000058l\|arrow_sorted.bam --output ptg000058l\|arrow --outdir testpilon
