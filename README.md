@@ -1,4 +1,10 @@
 # B10.RIII Genome Assembly Workflow
+---
+This repository provides the detailed workflow used to assemble the B10.RIII genome.\
+The tools/scripts used in the workflow are provided in the 'Tools' folder.
+
+---
+
 
 ## 1. Short reads - kmer estimation
 `sinteractive --cpus-per-task=60 --mem=1507g --gres=lscratch:300`\
