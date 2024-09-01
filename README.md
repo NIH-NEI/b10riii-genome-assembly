@@ -3,8 +3,13 @@
 This repository provides the detailed workflow used to assemble the B10.RIII genome.\
 The tools/scripts used in the workflow are provided in the [Tools](Tools) folder.
 
----
+- Authors: Vijay Nagarajan PhD
+- Affiliation: Laboratory of Immunology, NEI/NIH
+- Contact: nagarajanv@nih.gov
+- Description: This workflow takes the raw data files, checks the quality, does preprocessing, generates swarm command files for assembly and quality assessments
+- Platform: The workflow BASH commands were developed to run in the NIH Biowulf cluster computing facility, but could be reused/reproduced in any linux environment with appropriate changes
 
+---
 
 ## 1. Short reads - kmer estimation
 `sinteractive --cpus-per-task=60 --mem=1507g --gres=lscratch:300`\
