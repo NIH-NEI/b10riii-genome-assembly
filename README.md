@@ -86,7 +86,17 @@ The tools/scripts used in the workflow are provided in the [Tools](Tools) folder
 ### 7.1 quast with hicanu, pbipa, hifiasm
 `quast.py -o /b10riii/Results/quast/hicanu-pbipa-hifiasm /b10riii/Results/pacbio/hicanu/hicanudefault3/hicanudefault3.contigs.fasta /b10riii/Results/pacbio/hicanu/hicanudefault4/hicanudefault4.contigs.fasta /b10riii/Results/pacbio/pbipa/default/assembly-results/final.p_ctg.fasta /b10riii/Results/pacbio/pbipa/default2/assembly-results/final.p_ctg.fasta /b10riii/Results/pacbio/hifiasm/default-60/default.asm.bp.p_ctg.fa /b10riii/Results/pacbio/hifiasm/default-60-filtered/default-60-filtered.asm.bp.p_ctg.fa /b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120`
 
-## 8. Polishing using long reads
+## 8. ONT Flye Assembly
+INPUT_FASTQ=/data/CaspiWGSData/Junseok/b10test/SRR30536659_1.fastq.gz
+OUTPUT_DIR=/data/CaspiWGSData/Junseok/b10test/flye_output
+
+flye \
+  --nano-raw $INPUT_FASTQ \
+  --genome-size 2.7g \
+  --threads 16 \
+  --out-dir $OUTPUT_DIR
+
+## 9. Polishing using long reads
 `source /b10riii/Tools/conda/etc/profile.d/conda.sh`\
 `conda activate pbmm2`\
 `cd /b10riii/Results/polished/pacbiopolished`\
@@ -103,7 +113,7 @@ The tools/scripts used in the workflow are provided in the [Tools](Tools) folder
 `swarm -f /b10riii/Tools/pbmm2-alignment-norm-parallel.swarm -g 247 -t 56 --gres=lscratch:800`\
 `ls -lh | grep "samtools" | cut -d'.' -f4 | sort | uniq -c`
 
-## 9. Hybrid assembly
+## 10. Hybrid assembly
 `source /b10riii/Tools/conda/etc/profile.d/conda.sh`
 `conda create -n python37 python=3.7.7 lxml=4.5.0 pandas=1.0.3 natsort=7.0.1 drmaa=0.7.9 numpy=1.18.4 numba=0.42.0 pandasql=0.7.3 scikit-learn=0.22.1 pyyaml=5.3.1 intervaltree=3.0.2 scipy=1.4.1 imbalanced-learn=0.6.2 matplotlib=3.1.3 lightgbm=2.3.0 xlrd=1.2.0 pytest=5.4.2 pytest-forked pytest-xdist pytest-cov coverage=5.4 hmmlearn xgboost=0.90 joblib=0.13.2 xlrd`\
 `conda activate python37`\
