@@ -86,16 +86,27 @@ The tools/scripts used in the workflow are provided in the [Tools](Tools) folder
 ### 7.1 quast with hicanu, pbipa, hifiasm
 `quast.py -o /b10riii/Results/quast/hicanu-pbipa-hifiasm /b10riii/Results/pacbio/hicanu/hicanudefault3/hicanudefault3.contigs.fasta /b10riii/Results/pacbio/hicanu/hicanudefault4/hicanudefault4.contigs.fasta /b10riii/Results/pacbio/pbipa/default/assembly-results/final.p_ctg.fasta /b10riii/Results/pacbio/pbipa/default2/assembly-results/final.p_ctg.fasta /b10riii/Results/pacbio/hifiasm/default-60/default.asm.bp.p_ctg.fa /b10riii/Results/pacbio/hifiasm/default-60-filtered/default-60-filtered.asm.bp.p_ctg.fa /b10riii/Results/chromosome/test/GCF_000001635.27_GRCm39_genomic.fna.asmdefaultfiltered.bp.p_ctg.fa.split.reconciled.fa /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120`
 
+## 8. Preprocessing ONT reads
+`
+NanoPlot --fastq /data/CaspiWGSData/Junseok/b10test/SRR30536659_1.fastq.gz --outdir QC_results --threads 4
+`
+### 8.1 Correcting ONT reads using short reads using ratatosk
+`
+eval "$(conda shell.bash hook)"
+conda activate ratatosk-env
+Ratatosk correct Q 90 -v -G -c 8 -s /data/CaspiWGSData/b10riii/Results/illumina/bbduk/F1_S1_R1_001.trimmed.fastq.gz /data/CaspiWGSData/b10riii/Results/illumina/bbduk/F1_S1_R2_001.trimmed.fastq.gz -l /-data/CaspiWGSData/Junseok/b10test/SRR30536659_1.fastq.gz -o corrected_ONT.fastq.gz
+`
+
 ## 8. ONT Flye Assembly
+`
 INPUT_FASTQ=/data/CaspiWGSData/Junseok/b10test/SRR30536659_1.fastq.gz
 OUTPUT_DIR=/data/CaspiWGSData/Junseok/b10test/flye_output
-
 flye \
   --nano-raw $INPUT_FASTQ \
   --genome-size 2.7g \
   --threads 16 \
   --out-dir $OUTPUT_DIR
-
+`
 ## 9. Polishing using long reads
 `source /b10riii/Tools/conda/etc/profile.d/conda.sh`\
 `conda activate pbmm2`\
@@ -162,6 +173,8 @@ flye \
 ### 10.2. quast after and before polishing
 `module load quast`\
 `quast.py -o /b10riii/Results/quast/polished-hifiasm-filtered /b10riii/Results/pacbio/hifiasm/default-60-filtered/default-60-filtered.asm.bp.p_ctg.fa /b10riii/Results/polished/pacbiopolished/gcpp-parallel/polished_seqs/arrow-polished-1/arrow-polished-1.fasta /b10riii/RawData/ncbi_dataset/data/GCF_000001635.27/GCF_000001635.27_GRCm39_genomic.fna --threads 120`
+
+## Integrating both long read assemblies
 
 ## 11. Polishing using short reads - Pilon
 `python /b10riii/Tools/Fasta_splitter.py arrow-polished-1.fasta > sequence_heads.txt`\
