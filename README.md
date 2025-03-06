@@ -97,7 +97,7 @@ conda activate ratatosk-env
 Ratatosk correct Q 90 -v -G -c 8 -s /data/CaspiWGSData/b10riii/Results/illumina/bbduk/F1_S1_R1_001.trimmed.fastq.gz /data/CaspiWGSData/b10riii/Results/illumina/bbduk/F1_S1_R2_001.trimmed.fastq.gz -l /-data/CaspiWGSData/Junseok/b10test/SRR30536659_1.fastq.gz -o corrected_ONT.fastq.gz
 `
 
-## 8. ONT Flye Assembly
+## 9. ONT Flye Assembly
 `
 INPUT_FASTQ=/data/CaspiWGSData/Junseok/b10test/SRR30536659_1.fastq.gz
 OUTPUT_DIR=/data/CaspiWGSData/Junseok/b10test/flye_output
@@ -106,6 +106,23 @@ flye \
   --genome-size 2.7g \
   --threads 16 \
   --out-dir $OUTPUT_DIR
+`
+## 10. Integrating ONT and PacBio
+`
+Quickmerge
+merge_wrapper.py -hco 5.0 -c 1.5 -l 10000 /data/CaspiWGSData/Junseok/b10test/flye_output/assembly.fasta /data/CaspiWGSData/b10riii/Results/pacbio/assemblies/asmdefaultfiltered.bp.p_ctg.fa
+NextPolish
+`
+
+`
+nextPolish polish.cfg
+polish.cfg:
+task = best
+rewrite = yes
+genome = ../../flye_output/assembly.fasta
+genome_size = auto
+[hifi_option]
+hifi_fofn = ../../hifi.fofn
 `
 ## 9. Polishing using long reads
 `source /b10riii/Tools/conda/etc/profile.d/conda.sh`\
